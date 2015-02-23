@@ -149,8 +149,6 @@ App.prototype.swapQuote = function(newQuote) {
             date.getMonth() + 1, date.getDate(), date.getFullYear());
   }
 
-  // TODO: html escape
-
   var quoteElement = $('.quotana-quote');
   var html = '<p class="quotana-content">';
   newQuote.lines.forEach(function(line, index) {
@@ -193,6 +191,8 @@ var Quote = require('../quote');
 function QuoteStore(client, options) {
   this.client = client;
   this.options = options;
+  this.options.type = this.options.type || Quote.Type.SIMPLE;
+  this.options.source = this.options.source || 'default';
   this.quotes = [];
 }
 
@@ -223,9 +223,10 @@ QuoteStore.prototype.quote = function(index) {
 };
 
 QuoteStore.prototype._parseQuote = function(task) {
-  // TODO: support multiple-speaker quotes
+  // TODO: support multiple-speaker quotes based on `type`
   var quote = new Quote(task.id);
-  quote.type = 'customer';
+  quote.type = this.options.type;
+  quote.source = this.options.source;
   quote.owner = task.created_by;
   quote.status = Quote.Status.VALID;
   quote.date = new Date(task.created_at);
@@ -238,9 +239,10 @@ QuoteStore.prototype._parseQuote = function(task) {
 };
 
 QuoteStore.prototype._cleanLine = function(line) {
-  return line.trim()
+  return line
       .replace(/\n/g, ' ')
       .replace(/'/g, "&#146;")
+      .trim();
 };
 
 module.exports = QuoteStore;
