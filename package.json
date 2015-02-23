@@ -1,0 +1,36 @@
+{
+  "name": "quotana",
+  "version": "0.0.1",
+  "description": "Use Asana as a repository for capturing quotes.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Asana/quotana.git"
+  },
+  "keywords": [
+    "quotes",
+    "asana"
+  ],
+  "author": "Greg Slovacek",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/Asana/quotana/issues"
+  },
+  "homepage": "https://github.com/Asana/quotana",
+  "devDependencies": {
+    "bluebird": "^2.9.12",
+    "browserify": "^9.0.3",
+    "gulp": "^3.8.11",
+    "vinyl-source-stream": "^1.0.0"
+  },
+  "dependencies": {
+    "asana": "^0.6.1",
+    "bluebird": "^2.3.11",
+    "escape-html": "^1.0.1",
+    "express": "^4.11.2",
+    "request": "^2.48.0"
+  }
+}

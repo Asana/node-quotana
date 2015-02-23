@@ -1,0 +1,36 @@
+<!DOCTYPE HTML PUBLIC "-//IETF//DTD HTML//EN">
+<html>
+<head>
+  <title>Quotana</title>
+  <link rel="stylesheet" type="text/css" media="screen, projection" href="quotana.css" />
+  <script src="asana.js"></script>
+  <script src="quotana.js"></script>
+  <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+</head>
+
+<body>
+<div id="ui"></div>
+<div class="logo-container">
+  <img class="logo" src="logo.png" />
+</div>
+
+<script>
+  //<![CDATA[
+
+  var app = new Quotana.App({
+    clientId: 20775305011453,
+    redirectUri: 'http://localhost.asana.com:8338/popup_receiver.html',
+    projects: [{
+      id: 27504473271846,
+      type: Quotana.SIMPLE,
+      source: 'customer'
+    }],
+    containerId: 'ui'
+  });
+  app.start();
+
+  //]]>
+</script>
+
+</body>
+</html>
