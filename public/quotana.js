@@ -1,10 +1,30 @@
 (function(f){if(typeof exports==="object"&&typeof module!=="undefined"){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.Quotana = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var App = require('./app');
 var Quote = require('../common/quote');
+var config = require('../common/config');
 
 exports.App = App;
-exports.SIMPLE = Quote.Type.SIMPLE;
-},{"../common/quote":2,"./app":3}],2:[function(require,module,exports){
+exports.config = config;
+
+},{"../common/config":2,"../common/quote":3,"./app":5}],2:[function(require,module,exports){
+module.exports = {
+  clientId: 20775305011453,
+  redirectUri: 'http://localhost.asana.com:5020/popup_receiver.html',
+  failuresUntilAdminFollow: 3,
+  moderatorId: 20764546327859,
+  administratorId: 597688565,
+  quietPeriodMs: 30000,
+  projects: [
+    {
+      id: 27504473271846,
+      type: 'simple',
+      source: 'customer'
+    }
+  ],
+  debug: true
+};
+
+},{}],3:[function(require,module,exports){
 
 function Quote(id) {
   this.task = id;
@@ -16,24 +36,29 @@ function Quote(id) {
   this.context = null;
   this.moderated = false;
   this.type = 'default';
+  this.numFailures = 0;
 }
 
 Quote._properties = [
-  'task', 'owner', 'status', 'hash', 'date', 'lines', 'moderated', 'context'
+  'task', 'owner', 'status', 'hash', 'date', 'lines', 'moderated', 'context',
+  'type', 'numFailures'
 ];
 
 Quote.Type = {
-  SIMPLE: 'simple'
+  // Simple quote: name = author, notes = full quote, verbatim
+  SIMPLE: 'simple',
+  // Multi-speaker quote
+  MULTI: 'multi'
 };
 
 Quote.Status = {
   // We recognize the quote has been modified recently, and we are waiting
   // to take action on it.
-  MODIFIED: "modified",
+  MODIFIED: 'modified',
   // Quote has been parsed and is invalid.
-  INVALID: "invalid",
+  INVALID: 'invalid',
   // Quote has been validated. If modified, could be reparsed.
-  VALID: "valid"
+  VALID: 'valid'
 };
 
 Quote.prototype.toJson = function() {
@@ -55,13 +80,100 @@ Quote.prototype.fromJson = function(json) {
 
 module.exports = Quote;
 
-},{}],3:[function(require,module,exports){
+},{}],4:[function(require,module,exports){
+var Bluebird = require('bluebird');
+var Quote = require('./quote');
+
+function QuoteStore(client, options) {
+  this.client = client;
+  this.options = options;
+  this.options.type = this.options.type || Quote.Type.SIMPLE;
+  this.options.source = this.options.source || 'default';
+  this.quotesInOrder = [];
+  this.quotesById = {};
+}
+
+QuoteStore.prototype.quoteFromTask = function(task) {
+  if (this.type === Quote.Type.SIMPLE) {
+    return this._parseSimpleQuote(task);
+  } else if (this.type === Quote.Type.MULTI) {
+    return this._parseMultiQuote(task);
+  }
+};
+
+QuoteStore.prototype.load = function() {
+  var me = this;
+  return new Bluebird(function(resolve, reject) {
+    var stream = me.client.stream(
+        me.client.tasks.findByProject(me.options.id, {
+          opt_fields: 'name,notes,created_by,created_at,external'
+        }));
+    stream.on('data', function(quoteTask) {
+      var quote = QuoteStore.quoteFromTask(quoteTask);
+      me.quotesInOrder.push(quote);
+      me.quotesById[quote.id] = quote;
+    });
+    stream.on('end', function() {
+      resolve(me.quotesInOrder);
+    });
+    stream.on('error', function(error) {
+      reject(error);
+    });
+  });
+};
+
+QuoteStore.prototype.quote = function(index) {
+  if (index === undefined) {
+    index = Math.floor(Math.rand() * this.quotes.length);
+  }
+  return this.quotes[index];
+};
+
+QuoteStore.prototype._parseSimpleQuote = function(task) {
+  var quote = new Quote(task.id);
+  quote.type = this.options.type;
+  quote.source = this.options.source;
+  quote.owner = task.created_by;
+  quote.status = Quote.Status.VALID;
+  quote.date = new Date(task.created_at);
+  quote.lines = [{
+    speaker: task.name,
+    line: this._cleanLine(task.notes)
+  }];
+  quote.speakers = [task.name];
+  return quote;
+};
+
+QuoteStore.prototype._parseMultiSpeakerQuote = function(task) {
+  var quote = new Quote(task.id);
+  if (task.external && task.external.data) {
+    quote.fromJson(task.external.data);
+  } else {
+    quote.type = this.options.type;
+    quote.source = this.options.source;
+    quote.owner = task.created_by;
+    quote.status = Quote.Status.MODIFIED;
+    quote.date = new Date(task.created_at);
+  }
+  return quote;
+};
+
+QuoteStore.prototype._cleanLine = function(line) {
+  return line
+      .replace(/\n/g, ' ')
+      .replace(/'/g, "&#146;")
+      .trim();
+};
+
+module.exports = QuoteStore;
+
+},{"./quote":3,"bluebird":6}],5:[function(require,module,exports){
 //var Asana = require('asana');
 var Bluebird = require('bluebird');
 var util = require('util');
 var escapeHtml = require('escape-html');
 var Quote = require('../common/quote');
-var QuoteStore = require('./quote_store');
+var QuoteStore = require('../common/quote_store');
 
 function App(options) {
   var me = this;
@@ -184,70 +296,7 @@ App.prototype.swapQuote = function(newQuote) {
 
 module.exports = App;
 
-},{"../common/quote":2,"./quote_store":4,"bluebird":5,"escape-html":10,"util":9}],4:[function(require,module,exports){
-var Bluebird = require('bluebird');
-var Quote = require('../common/quote');
-
-function QuoteStore(client, options) {
-  this.client = client;
-  this.options = options;
-  this.options.type = this.options.type || Quote.Type.SIMPLE;
-  this.options.source = this.options.source || 'default';
-  this.quotes = [];
-}
-
-QuoteStore.prototype.load = function() {
-  var me = this;
-  return new Bluebird(function(resolve, reject) {
-    var stream = me.client.stream(
-        me.client.tasks.findByProject(me.options.id, {
-          opt_fields: 'name,notes,created_by,created_at,external'
-        }));
-    stream.on('data', function(quote) {
-      me.quotes.push(me._parseQuote(quote));
-    });
-    stream.on('end', function() {
-      resolve(me.quotes);
-    });
-    stream.on('error', function(error) {
-      reject(error);
-    });
-  });
-};
-
-QuoteStore.prototype.quote = function(index) {
-  if (index === undefined) {
-    index = Math.floor(Math.rand() * this.quotes.length);
-  }
-  return this.quotes[index];
-};
-
-QuoteStore.prototype._parseQuote = function(task) {
-  // TODO: support multiple-speaker quotes based on `type`
-  var quote = new Quote(task.id);
-  quote.type = this.options.type;
-  quote.source = this.options.source;
-  quote.owner = task.created_by;
-  quote.status = Quote.Status.VALID;
-  quote.date = new Date(task.created_at);
-  quote.lines = [{
-    speaker: task.name,
-    line: this._cleanLine(task.notes)
-  }];
-  quote.speakers = [task.name];
-  return quote;
-};
-
-QuoteStore.prototype._cleanLine = function(line) {
-  return line
-      .replace(/\n/g, ' ')
-      .replace(/'/g, "&#146;")
-      .trim();
-};
-
-module.exports = QuoteStore;
-
-},{"../common/quote":2,"bluebird":5}],5:[function(require,module,exports){
+},{"../common/quote":3,"../common/quote_store":4,"bluebird":6,"escape-html":11,"util":10}],6:[function(require,module,exports){
 (function (process,global){
 /* @preserve
  * The MIT License (MIT)
@@ -4914,7 +4963,7 @@ module.exports = ret;
 },{"./es5.js":14}]},{},[4])(4)
 });                    ;if (typeof window !== 'undefined' && window !== null) {                               window.P = window.Promise;                                                     } else if (typeof self !== 'undefined' && self !== null) {                             self.P = self.Promise;                                                         }
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"_process":7}],6:[function(require,module,exports){
+},{"_process":8}],7:[function(require,module,exports){
 if (typeof Object.create === 'function') {
   // implementation from standard node.js 'util' module
   module.exports = function inherits(ctor, superCtor) {
@@ -4939,7 +4988,7 @@ if (typeof Object.create === 'function') {
   }
 }
 
-},{}],7:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 // shim for using process in browser
 
 var process = module.exports = {};
@@ -4998,14 +5047,14 @@ process.chdir = function (dir) {
 };
 process.umask = function() { return 0; };
 
-},{}],8:[function(require,module,exports){
+},{}],9:[function(require,module,exports){
 module.exports = function isBuffer(arg) {
   return arg && typeof arg === 'object'
     && typeof arg.copy === 'function'
     && typeof arg.fill === 'function'
     && typeof arg.readUInt8 === 'function';
 }
-},{}],9:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 (function (process,global){
 // Copyright Joyent, Inc. and other Node contributors.
 //
@@ -5595,7 +5644,7 @@ function hasOwnProperty(obj, prop) {
 }
 
 }).call(this,require('_process'),typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{"./support/isBuffer":8,"_process":7,"inherits":6}],10:[function(require,module,exports){
+},{"./support/isBuffer":9,"_process":8,"inherits":7}],11:[function(require,module,exports){
 /**
  * Escape special characters in the given string of html.
  *
