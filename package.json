@@ -27,6 +27,7 @@
     "gulp-jshint": "^1.9.2",
     "gulp-mocha": "^2.0.0",
     "jshint-stylish": "^1.0.1",
+    "sinon": "^1.12.2",
     "vinyl-source-stream": "^1.0.0"
   },
   "dependencies": {
