@@ -1,10 +1,11 @@
 {
   "name": "quotana",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Use Asana as a repository for capturing quotes.",
   "main": "index.js",
   "scripts": {
-    "test": "node_modules/.bin/gulp test"
+    "test": "node_modules/.bin/gulp test",
+    "prepublish": "node_modules/.bin/gulp build-web"
   },
   "repository": {
     "type": "git",
