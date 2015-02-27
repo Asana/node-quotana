@@ -218,8 +218,9 @@ function parseSpokenLine(rawLine) {
 
 function cleanLine(line) {
   return line
-      .replace(/\n/g, ' ')
-      .replace(/'/g, "&#146;")
+      .replace(/\s+/g, ' ')
+    // TODO: transform single and double quotes to smart quotes
+//      .replace(/'/g, "&#146;")
       .trim();
 }
 
@@ -343,6 +344,9 @@ QuoteStore.prototype.load = function() {
           opt_fields: Quote.TASK_FIELDS.join(',')
         }));
     stream.on('data', function(quoteTask) {
+      // This is a workaround for the API not honoring options through
+      // pagination
+      // TODO: remove this when API fixed
       if (quoteTask.assignee === undefined) {
         log.debug('Task does not contain complete data', quoteTask);
         return;
