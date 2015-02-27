@@ -21,22 +21,21 @@
   },
   "homepage": "https://github.com/Asana/quotana",
   "devDependencies": {
-    "bluebird": "^2.9.12",
-    "browserify": "^9.0.3",
-    "gulp": "^3.8.11",
-    "gulp-jshint": "^1.9.2",
-    "gulp-mocha": "^2.0.0",
     "jshint-stylish": "^1.0.1",
     "sinon": "^1.12.2",
     "vinyl-source-stream": "^1.0.0"
   },
   "dependencies": {
     "asana": "^0.7.1",
-    "bluebird": "^2.3.11",
+    "bluebird": "^2.9.12",
     "escape-html": "^1.0.1",
     "express": "^4.11.2",
     "lodash": "^3.3.0",
-    "request": "^2.48.0"
+    "request": "^2.48.0",
+    "browserify": "^9.0.3",
+    "gulp": "^3.8.11",
+    "gulp-jshint": "^1.9.2",
+    "gulp-mocha": "^2.0.0"
   },
   "bin": {
     "quotana-web": "lib/webserver/index.js",
