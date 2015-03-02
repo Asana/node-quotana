@@ -73,26 +73,34 @@ Quotana interprets a multi-speaker quote the following way:
 **Lines:** Will read them from either the task name *or* the description,
 whichever appears to contain them. If the name consist of lines then the
 description will be interpreted as the *context*. If the description consists
-of lines then the name will be ignored and serves just to label the quote
-in Asana somehow.
+of lines then the name will be ignored and serves just to identify the quote
+in for Asana users.
+
+**Date:** The creation date of the task will be used as the date of the quote,
+unless the date is included on its own line in the task description OR at the
+beginning of the name. A date line is always of the form `YYYY-MM-DD`, e.g.
+`2015-02-23`. With some work the system
+could be more flexible in interpreting dates but for now this is the only way
+it will figure it out correctly.
 
 **Context:** Multi-speaker quotes have a *context*, or explanation
 of what was going on at the time. For proper display, this is usually written
 as if completing the sentence "This was said _____". If the quote lines are in
-the task name, then the description is used as context. Conversely if the lines
-are in the description, then the task name is the context.
+the task name, then the description is used as context. Otherwise the context 
+is whatever follows the lines of a quote and doesn't look like a speaker line
+or date line.
 
-**Date:** The creation date of the task will be used as the date of the quote,
-unless a date line is the last line of the task description. A date line is
-always of the form `YYYY-MM-DD` to indicate the date, e.g. `2015-02-23`.
-With some work the system could be more flexible in interpreting dates but
-for now this is the only way it will figure it out correctly.
+**Extra Stuff:** Sometimes people like to add extra color to the quote,
+maybe a lengthier context or description of something. This can't be
+incorporated in a clean display in Quotana, but it can still be included in the
+task as long as it follows a line containing multiple dashes (`---`). Everything
+after that line will be ignored by the system.
 
 #### Example 1
 
-Single speaker, context in name, dated as of task creation.
+Single speaker in notes, dated as of task creation.
 
-**Name:** `about aors`
+**Name:** `phips on aors`
 
 **Description:**
 
@@ -102,9 +110,9 @@ Single speaker, context in name, dated as of task creation.
 
 #### Example 2
 
-Two speakers, context in name, explicitly dated.
+Two speakers in notes, explicitly dated.
 
-**Name:** `on slack`
+**Name:** `sri and bella on v-day`
     
 **Description:**
 
@@ -114,7 +122,7 @@ Two speakers, context in name, explicitly dated.
 
 #### Example 3
 
-One speaker, lines in name, no context
+One speaker in name, no context
 
 **Name:** `manoj: "So, horse masks, yea or neigh?"`
     
@@ -124,18 +132,17 @@ One speaker, lines in name, no context
 
 #### Example 4
 
-One speaker, lines in name, context in description, explicitly dated
+One speaker in name with date, context in description
 
-**Name:** `bella: "In Russian we have a saying: 'Thank you is too much, but three dollars will do just fine.'"`
+**Name:** `2015-02-12 bella: "In Russian we have a saying: 'Thank you is too much, but three dollars will do just fine.'"`
     
 **Description:**
 
     on whether peer recognition should be monetary
-    2015-02-12
 
 #### Example 5
 
-Two speakers, lines in name, no context
+Two speakers in name, no context
 
 **Name:** `Vanessa: "[to stephanie] Do you usually intervene in other people's conversations?" Marcos: "I do."`
     
