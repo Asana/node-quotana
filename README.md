@@ -14,6 +14,10 @@ Uses Asana as a repository for capturing quotes of various types.
 
 TBD
 
+## Quoticorn
+
+The **Quoticorn** account will examine each quote added. He will also re-examine quotes after they change. If a quote is being changed, he will wait some amount of time for you to stop changing it, and which point he'll assume you're done and examine it. If you want him to examine it right away, you can assign the quote to him.
+
 ## Quote Format
 
 Quotes come in two flavors: "simple" quotes which have only a single speaker,
@@ -29,7 +33,8 @@ should go.
 
 **Content:** The full content of the task description is used as the content
 of the quote, unless it has a date line at the bottom. Quotes are supposed to
-be short, so newlines and extra whitespace will be collapsed into a single space.
+be short, so pare it down to just the essential part. Newlines and extra whitespace
+will be collapsed into a single space.
  
 **Date:** The creation date of the task will be used as the date of the quote,
 unless a date line is the last line of the task description. A date line is
@@ -64,7 +69,8 @@ a screenplay, the format is `speaker: content`. It is optional to put quotes
 around the content (unless the line appears in the task name, see below).
 
 Tips:
-  * Like a screenplay, put one speaking line per line in the notes. Don't separate the speaker
+  * Keep the quotes short! More than a few hundreds characters and it won't fit on the dashboard and no one will be able to read it. Pare it down to just what's essential (while retaining the impact or humor).
+  * Like a screenplay, put one speaking line per line in the notes, e.g. `greg: hello!`. Don't separate the speaker and their line with newlines.
   * If the date is different than the date you created it, add it at the end on its own line in the format `YYYY-MM-DD`.
   * If you have actions in the speaking lines, put them as part of the spoken content, *not* the speaker name, e.g. `greg: "[surprised] huh?"` instead of `greg [surprised]: "huh?"`.
   * If you want to add some color/context, fit it on a single line on its own. If it's long, put it after a line of just `---` so Quotana will ignore it but it can stay in the task.
