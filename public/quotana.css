@@ -1,3 +1,5 @@
+/* universal */
+
 * {
   margin: 0;
   padding: 0;
@@ -24,29 +26,6 @@ body {
   width: 800px;
   line-height: 140%;
 }
-.quotana-content:before {
-  content: "“ ";
-}
-.quotana-content:after {
-  content: "”";
-}
-.quotana-content {
-  text-indent: -0.71em; /* trying to get width of the opening quote */
-}
-
-.quotana-byline {
-  margin-top: 1em;
-  opacity: .7;
-  font-size: 66%;
-}
-
-.quotana-byline-speakers:before {
-  content: "\2014\ ";
-}
-
-.quotana-byline-date {
-  display: none;
-}
 
 .logo-container {
   text-align: center;
@@ -59,3 +38,66 @@ body {
 .logo {
   width: 2em;
 }
+
+.quotana-byline {
+  margin-top: 1em;
+  opacity: .7;
+  font-size: 66%;
+}
+
+.quotana-byline-speakers:before {
+  content: "\2014\ ";
+}
+
+.quotana-context {
+  opacity: .7;
+  font-size: 66%;
+  line-height: 100%;
+}
+
+/* multi */
+
+.quotana-type-multi .quotana-content {
+  font-size: 80%;
+}
+.quotana-type-multi .quotana-content-speaker {
+  text-transform: lowercase;
+  font-weight: bold;
+}
+.quotana-type-multi .quotana-byline-speakers {
+  text-transform: lowercase;
+}
+.quotana-type-multi .quotana-content-speaker + .quotana-content-speaker:before {
+  white-space: pre;
+  content: "\A";
+}
+.quotana-type-multi .quotana-content-speaker:after {
+  content: ":";
+  padding-right: 0.3em;
+}
+
+.quotana-type-multi .quotana-byline-date {
+  float: right;
+}
+
+
+/* single */
+
+.quotana-type-simple .quotana-content:before {
+  content: "“ ";
+}
+.quotana-type-simple .quotana-content:after {
+  content: "”";
+}
+.quotana-type-simple .quotana-content {
+  text-indent: -0.71em; /* trying to get width of the opening quote */
+}
+
+.quotana-type-simple .quotana-byline-date {
+  display: none;
+}
+
+.quotana-type-simple .quotana-context {
+  display: none;
+}
+
