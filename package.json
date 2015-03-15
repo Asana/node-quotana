@@ -1,6 +1,6 @@
 {
   "name": "quotana",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Use Asana as a repository for capturing quotes.",
   "main": "index.js",
   "scripts": {
