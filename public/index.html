@@ -10,7 +10,22 @@
 </head>
 
 <body>
-<div id="ui"></div>
+<div id="control">
+  <a class="control-link" href="https://github.com/Asana/node-quotana/blob/master/README.md">about</a>
+  <span class="control-separator"></span>
+  <a class="control-link" id="control_edit_quote" href="#">edit quote</a>
+  <span class="control-separator"></span>
+  <a class="control-link" id="control_view_customer" href="#">customers</a>
+  <a class="control-link" id="control_view_humor" href="#">humor</a>
+  <a class="control-link" id="control_view_all" href="#">all</a>
+</div>
+<div id="ui">
+  <div class="quotana-loading">
+    <div class="quotana-loader-dot quotana-loader-dot-1"></div>
+    <div class="quotana-loader-dot quotana-loader-dot-2"></div>
+    <div class="quotana-loader-dot quotana-loader-dot-3"></div>
+  </div>
+</div>
 <div class="logo-container">
   <img class="logo" src="logo.png" />
 </div>
