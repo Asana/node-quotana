@@ -69,13 +69,17 @@ a screenplay, the format is `speaker: content`. It is optional to put quotes
 around the content (unless the line appears in the task name, see below).
 
 Tips:
-  * Keep the quotes short! More than a few hundreds characters and it won't fit on the dashboard and no one will be able to read it. Pare it down to just what's essential (while retaining the impact or humor).
+  * Keep the quotes short!
+    * More than a few hundred characters and it won't fit on the dashboard and no one will be able to read it.
+    * Pare it down to just what's essential (while retaining the impact or humor).
+    * For Asanas, prefer *usernames* instead of full names.
+    * Newlines and extra whitespace will be collapsed into a single space.
   * Like a screenplay, put one speaking line per line in the notes, e.g. `greg: hello!`. Don't separate the speaker and their line with newlines.
   * If the date is different than the date you created it, add it at the end on its own line in the format `YYYY-MM-DD`.
   * If you have actions in the speaking lines, put them as part of the spoken content, *not* the speaker name, e.g. `greg: "[surprised] huh?"` instead of `greg [surprised]: "huh?"`.
-  * If you want to add some color/context, fit it on a single line on its own. If it's long, put it after a line of just `---` so Quotana will ignore it but it can stay in the task.
-  * Quotes are supposed to be **short**! Or else it's not a quote, it's a story and it belongs somewhere else. Prefer usernames instead of full names. Newlines and extra whitespace will be collapsed into a single space.
-  * Yes, the rules are a bit annoying and when Asana has a great custom schema these won't be necessary. But it's not that hard once you get the hang of it, so .. enjoy!
+  * If you want to add some color/context, fit it on a single line on its own. If it's long, put it after a line of just `---` so the dashboard will ignore it but it can stay in the task.
+
+Sorry for the rules (we'd like to keep this simple!) but please remember a robot has to understand these to put them on the dashboard nicely, and robot unicorns are dumb. Here are some examples you can look at if you're still scratching your head.
 
 #### Example 1
 
