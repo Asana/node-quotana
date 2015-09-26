@@ -40,7 +40,12 @@ body {
   margin-bottom: 1.5em;
 }
 .logo {
+  display: inline-block;
+  background-image: url(logo.png);
+  background-size: contain;
+  background-repeat: no-repeat;
   width: 2em;
+  height: 2em;
 }
 
 .quotana-byline {
@@ -179,4 +184,3 @@ body {
 .quotana-type-simple .quotana-context {
   display: none;
 }
-

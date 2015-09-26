@@ -2,7 +2,6 @@
 <html>
 <head>
   <title>Quotana</title>
-  <link rel="stylesheet" type="text/css" media="screen, projection" href="quotana.css" />
   <script src="asana.js"></script>
   <script src="quotana.js"></script>
   <script src="config.js"></script>
@@ -10,24 +9,41 @@
 </head>
 
 <body>
-<div id="control">
-  <a class="control-link" href="https://github.com/Asana/node-quotana/blob/master/README.md">about</a>
-  <span class="control-separator"></span>
-  <a class="control-link" id="control_edit_quote" href="#">edit quote</a>
-  <span class="control-separator"></span>
-  <a class="control-link" id="control_view_customer" href="#">customers</a>
-  <a class="control-link" id="control_view_humor" href="#">humor</a>
-  <a class="control-link" id="control_view_all" href="#">all</a>
-</div>
-<div id="ui">
-  <div class="quotana-loading">
-    <div class="quotana-loader-dot quotana-loader-dot-1"></div>
-    <div class="quotana-loader-dot quotana-loader-dot-2"></div>
-    <div class="quotana-loader-dot quotana-loader-dot-3"></div>
+
+<script>
+  //<![CDATA[
+  // Dynamically load stylesheet specified in config
+  (function() {
+    var head = document.getElementsByTagName('head')[0];
+    var link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.type = 'text/css';
+    link.href = Quotana.config.stylesheet || 'quotana.css';
+    link.media = 'all';
+    head.appendChild(link);
+  })();
+  //]]>
+</script>
+
+<div id="quotana">
+  <div id="control">
+    <a class="control-link" href="https://github.com/Asana/node-quotana/blob/master/README.md">about</a>
+    <span class="control-separator"></span>
+    <a class="control-link" id="control_edit_quote" href="#">edit quote</a>
+    <span class="control-separator"></span>
+    <span id="source_controls"></span>
+    <a class="control-link" id="control_view_all" href="#">all</a>
   </div>
-</div>
-<div class="logo-container">
-  <img class="logo" src="logo.png" />
+  <div id="ui">
+    <div class="quotana-loading">
+      <div class="quotana-loader-dot quotana-loader-dot-1"></div>
+      <div class="quotana-loader-dot quotana-loader-dot-2"></div>
+      <div class="quotana-loader-dot quotana-loader-dot-3"></div>
+    </div>
+  </div>
+  <div class="logo-container">
+    <div class="logo"></div>
+  </div>
 </div>
 
 <script>
